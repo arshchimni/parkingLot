@@ -61,7 +61,7 @@ func processCommand(command string) error {
 				fmt.Println(err.Error())
 				return err
 			} else {
-				err := pkg.Create_parking_lot(numberOfSlots)
+				err := pkg.CreateParkingLot(numberOfSlots)
 				if err != nil {
 					fmt.Println(err.Error())
 				}
@@ -102,7 +102,7 @@ func processCommand(command string) error {
 		case "registration_numbers_for_cars_with_colour":
 			color := arguments[0]
 
-			err := pkg.Registration_numbers_for_cars_with_colour(color)
+			err := pkg.RegistrationNumbersForCarsWithColour(color)
 			if err != nil {
 				fmt.Println(err.Error())
 			}
