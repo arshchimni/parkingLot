@@ -111,7 +111,7 @@ func processCommand(command string) error {
 		case "slot_numbers_for_cars_with_colour":
 			color := arguments[0]
 
-			err := pkg.SlotNumberForRegistrationNumber(color)
+			err := pkg.SlotNumbersForCarsWithColour(color)
 			if err != nil {
 				fmt.Println(err.Error())
 			}
