@@ -111,7 +111,7 @@ func processCommand(command string) error {
 		case "slot_numbers_for_cars_with_colour":
 			color := arguments[0]
 
-			err := pkg.Slot_numbers_for_cars_with_colour(color)
+			err := pkg.SlotNumberForRegistrationNumber(color)
 			if err != nil {
 				fmt.Println(err.Error())
 			}
@@ -120,7 +120,7 @@ func processCommand(command string) error {
 		case "slot_number_for_registration_number":
 			regNo := arguments[0]
 
-			err := pkg.Slot_number_for_registration_number(regNo)
+			err := pkg.SlotNumberForRegistrationNumber(regNo)
 			if err != nil {
 				fmt.Println(err.Error())
 			}

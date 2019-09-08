@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"container/heap"
+	"errors"
 	"fmt"
 	"sort"
 	"strconv"
@@ -34,7 +35,7 @@ func GetInstance() *parkingLot {
 	return instance
 }
 
-func Create_parking_lot(number int) error {
+func CreateParkingLot(number int) error {
 	pl := GetInstance()
 	if number <= 0 {
 		return fmt.Errorf("cannot create parking lot with given slots")
@@ -91,9 +92,12 @@ func Leave(delSlot int) error {
 		delete(pl.RegNoSlot, exitCar.GetRegNo())
 		delete(pl.ColorRegNo[exitCar.GetColor()], exitCar.GetRegNo())
 		fmt.Println("Slot number " + strconv.Itoa(delSlot) + " is free")
-
+		return nil
+	} else {
+		err := errors.New("Not Found")
+		return err
 	}
-	return nil
+
 }
 
 func Status() error {
@@ -108,13 +112,13 @@ func Status() error {
 	for i := 1; i <= pl.Capacity; i++ {
 		if parkCar, exists := pl.SlotCar[i]; exists {
 
-			fmt.Println(strconv.Itoa(i) + " \t " + strings.ToUpper(parkCar.GetRegNo()) + " \t " + (parkCar.GetColor()))
+			fmt.Println(strconv.Itoa(i) + "\t" + strings.ToUpper(parkCar.GetRegNo()) + "\t" + (parkCar.GetColor()))
 		}
 	}
 	return nil
 }
 
-func Registration_numbers_for_cars_with_colour(color string) error {
+func RegistrationNumbersForCarsWithColour(color string) error {
 	pl := GetInstance()
 	if !pl.Constructed {
 
@@ -129,13 +133,14 @@ func Registration_numbers_for_cars_with_colour(color string) error {
 		}
 		sort.Strings(prettyRegNo)
 		fmt.Println(strings.Join(prettyRegNo, ", "))
+		return nil
 	} else {
-		fmt.Println("Car with that color not present in the parking lot")
+		return fmt.Errorf("Car with that color not present in the parking lot")
 	}
-	return nil
+
 }
 
-func Slot_numbers_for_cars_with_colour(color string) error {
+func SlotNumbersForCarsWithColour(color string) error {
 	pl := GetInstance()
 	if !pl.Constructed {
 
@@ -156,7 +161,7 @@ func Slot_numbers_for_cars_with_colour(color string) error {
 	return nil
 }
 
-func Slot_number_for_registration_number(regNo string) error {
+func SlotNumberForRegistrationNumber(regNo string) error {
 	pl := GetInstance()
 	if !pl.Constructed {
 
@@ -166,7 +171,7 @@ func Slot_number_for_registration_number(regNo string) error {
 	if slot, ok := pl.RegNoSlot[regNo]; ok {
 		fmt.Println(slot)
 	} else {
-		fmt.Println("Not found")
+		return fmt.Errorf("Not found")
 	}
 	return nil
 }
