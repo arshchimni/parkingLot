@@ -1,6 +1,6 @@
 ### It is necessary that the code should be placed in `$GOPATH/src/github.com` folder.
 
-#Problem Statement (Parking Lot)
+# Problem Statement (Parking Lot)
 
 I own a  parking lot that can hold up to 'n' cars at any given point in time. Each slot is given a number starting at 1 increasing with increasing distance from the entry point in steps of one. I want to create an automated ticketing system that allows my customers to use my parking lot without human intervention. 
 
@@ -18,13 +18,13 @@ We interact with the system via a simple set of commands which produce a specifi
 2) It should accept a filename as a parameter at the command prompt and read the commands from that file
 
 
-#Output Format
+# Output Format
 
-###Example: File Input
+### Example: File Input
 
 To run the program:
 
-$ my_program file_inputs.txt > output.txt
+$ go run main.go file_inputs.txt > output.txt
 
 Input (in file):
 
@@ -104,11 +104,11 @@ KA-01-HH-1234, KA-01-HH-9999, KA-01-P-333
 Not found
 ```
 
-###Example: Interactive
+### Example: Interactive
 
 To run the program and launch the shell:
 
-$ my_program
+$ go run main.go
 
 Assuming a parking lot with 6 slots, the following commands should be run in sequence by
 
@@ -304,21 +304,10 @@ Output:
 Not found
 ```
 
-#Project Requirements
+#### Project Requirements
 
-Have go installed on you machine
+Have golang installed on you machine
 
-#### Run
-
-`go run main.go <inout file path>` runs the commands taking inputs from a file as mentioned above,
-
-To enter command line tool.
-
-```
-`go run main.go`
-```
-
-To execute the input file.
 
 #### Tests
 
