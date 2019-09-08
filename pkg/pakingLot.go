@@ -3,7 +3,7 @@ package pkg
 import (
 	"container/heap"
 	"fmt"
-	"log"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -11,17 +11,6 @@ import (
 	"github.com/parkingLot/car"
 	"github.com/parkingLot/util"
 )
-
-/*
-Commands needed to be made
-done 1.create_parking_lot
-done 2.park
-done 3.leave
-done 4.status
-done 5.registration_numbers_for_cars_with_colour
-done 6.slot_numbers_for_cars_with_colour
-7.slot_number_for_registration_number
-*/
 
 //create a parking lot struct that gets initialized with values suppled.
 
@@ -45,11 +34,10 @@ func GetInstance() *parkingLot {
 	return instance
 }
 
-func Create_parking_lot(number int) {
+func Create_parking_lot(number int) error {
 	pl := GetInstance()
 	if number <= 0 {
-		log.Println("cannot create parking lot with given slots")
-		return
+		return fmt.Errorf("cannot create parking lot with given slots")
 	}
 
 	for i := 1; i <= number; i++ {
@@ -61,21 +49,19 @@ func Create_parking_lot(number int) {
 	pl.RegNoSlot = map[string]int{}
 	pl.ColorRegNo = map[string]map[string]int{}
 	pl.SlotCar = map[int]car.Car{}
-	fmt.Println(pl)
 
 	fmt.Println("Created a parking lot with " + strconv.Itoa(number) + " slots")
+	return nil
 
 }
 
-func Park(regNo, color string) {
+func Park(regNo, color string) error {
 	pl := GetInstance()
 	if !pl.Constructed {
-		log.Println("Parking lot not constructed yet cannot park")
-		return
+		return fmt.Errorf("Parking lot not constructed yet cannot park")
 	}
 	if pl.EmptySlots.Len() == 0 {
-		log.Println("Parking lot has no empty slots")
-		return
+		return fmt.Errorf("Sorry, parking lot is full")
 	}
 
 	car := car.NewCar(regNo, color)
@@ -89,63 +75,71 @@ func Park(regNo, color string) {
 	} else {
 		pl.ColorRegNo[car.GetColor()] = map[string]int{car.GetRegNo(): allotedSlot.(int)}
 	}
-	log.Println("Allocated slot number: " + strconv.Itoa(allotedSlot.(int)))
+	fmt.Println("Allocated slot number: " + strconv.Itoa(allotedSlot.(int)))
+	return nil
 }
 
-func Leave(delSlot int) {
+func Leave(delSlot int) error {
 	pl := GetInstance()
 	if !pl.Constructed {
-		log.Println("Parking lot not constructed yet cannot park")
-		return
+
+		return fmt.Errorf("Parking lot not constructed yet cannot park")
 	}
 	if exitCar, ok := pl.SlotCar[delSlot]; ok {
 		heap.Push(&pl.EmptySlots, delSlot)
 		delete(pl.SlotCar, delSlot)
+		delete(pl.RegNoSlot, exitCar.GetRegNo())
 		delete(pl.ColorRegNo[exitCar.GetColor()], exitCar.GetRegNo())
-		log.Println("Slot number " + strconv.Itoa(delSlot) + " is free")
+		fmt.Println("Slot number " + strconv.Itoa(delSlot) + " is free")
 
 	}
-	log.Println(pl)
+	return nil
 }
 
-func Status() {
+func Status() error {
 	pl := GetInstance()
 	if !pl.Constructed {
-		log.Println("Parking lot not constructed yet cannot park")
-		return
+
+		return fmt.Errorf("Parking lot not constructed yet cannot park")
 	}
 	fmt.Println("Slot No.\tRegistration No.\tColour")
-	for slot, parkCar := range pl.SlotCar {
 
-		fmt.Println(strconv.Itoa(slot) + " \t " + strings.ToUpper(parkCar.GetRegNo()) + " \t " + (parkCar.GetColor()))
+	//needed to always have list in a sorted manner
+	for i := 1; i <= pl.Capacity; i++ {
+		if parkCar, exists := pl.SlotCar[i]; exists {
+
+			fmt.Println(strconv.Itoa(i) + " \t " + strings.ToUpper(parkCar.GetRegNo()) + " \t " + (parkCar.GetColor()))
+		}
 	}
+	return nil
 }
 
-func Registration_numbers_for_cars_with_colour(color string) {
+func Registration_numbers_for_cars_with_colour(color string) error {
 	pl := GetInstance()
 	if !pl.Constructed {
-		log.Println("Parking lot not constructed yet cannot park")
-		return
+
+		return fmt.Errorf("Parking lot not constructed yet cannot park")
 	}
 
 	var prettyRegNo []string
 
 	if regMap, ok := pl.ColorRegNo[color]; ok {
 		for regNo := range regMap {
-			prettyRegNo = append(prettyRegNo, regNo)
+			prettyRegNo = append(prettyRegNo, strings.ToUpper(regNo))
 		}
+		sort.Strings(prettyRegNo)
 		fmt.Println(strings.Join(prettyRegNo, ", "))
 	} else {
-		log.Println("Car with that color not present in the parking lot")
+		fmt.Println("Car with that color not present in the parking lot")
 	}
-
+	return nil
 }
 
-func Slot_numbers_for_cars_with_colour(color string) {
+func Slot_numbers_for_cars_with_colour(color string) error {
 	pl := GetInstance()
 	if !pl.Constructed {
-		log.Println("Parking lot not constructed yet cannot park")
-		return
+
+		return fmt.Errorf("Parking lot not constructed yet cannot park")
 	}
 
 	var prettySlot []string
@@ -154,23 +148,25 @@ func Slot_numbers_for_cars_with_colour(color string) {
 		for _, slot := range regMap {
 			prettySlot = append(prettySlot, strconv.Itoa(slot))
 		}
+		sort.Strings(prettySlot)
 		fmt.Println(strings.Join(prettySlot, ", "))
 	} else {
-		log.Println("Car with that color not present in the parking lot")
+		fmt.Println("Car with that color not present in the parking lot")
 	}
+	return nil
 }
 
-func Slot_number_for_registration_number(regNo string) {
+func Slot_number_for_registration_number(regNo string) error {
 	pl := GetInstance()
 	if !pl.Constructed {
-		log.Println("Parking lot not constructed yet cannot park")
-		return
+
+		return fmt.Errorf("Parking lot not constructed yet cannot park")
 	}
 
 	if slot, ok := pl.RegNoSlot[regNo]; ok {
-		log.Println(slot)
+		fmt.Println(slot)
 	} else {
-		log.Println("Not found")
+		fmt.Println("Not found")
 	}
-
+	return nil
 }
