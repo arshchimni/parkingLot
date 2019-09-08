@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/parkingLot/car"
+	"github.com/arshchimni/parkingLot/car"
 	"github.com/parkingLot/util"
 )
 
