@@ -93,10 +93,9 @@ func Leave(delSlot int) error {
 		delete(pl.ColorRegNo[exitCar.GetColor()], exitCar.GetRegNo())
 		fmt.Println("Slot number " + strconv.Itoa(delSlot) + " is free")
 		return nil
-	} else {
-		err := errors.New("Not Found")
-		return err
 	}
+	err := errors.New("Not Found")
+	return err
 
 }
 
@@ -112,7 +111,7 @@ func Status() error {
 	for i := 1; i <= pl.Capacity; i++ {
 		if parkCar, exists := pl.SlotCar[i]; exists {
 
-			fmt.Println(strconv.Itoa(i) + "\t" + strings.ToUpper(parkCar.GetRegNo()) + "\t" + (parkCar.GetColor()))
+			fmt.Println(strconv.Itoa(i) + "\t\t" + strings.ToUpper(parkCar.GetRegNo()) + "\t\t" + parkCar.GetColor())
 		}
 	}
 	return nil
@@ -129,14 +128,13 @@ func RegistrationNumbersForCarsWithColour(color string) error {
 
 	if regMap, ok := pl.ColorRegNo[color]; ok {
 		for regNo := range regMap {
-			prettyRegNo = append(prettyRegNo, strings.ToUpper(regNo))
+			prettyRegNo = append(prettyRegNo, regNo)
 		}
 		sort.Strings(prettyRegNo)
 		fmt.Println(strings.Join(prettyRegNo, ", "))
 		return nil
-	} else {
-		return fmt.Errorf("Car with that color not present in the parking lot")
 	}
+	return fmt.Errorf("Car with that color not present in the parking lot")
 
 }
 
@@ -155,10 +153,10 @@ func SlotNumbersForCarsWithColour(color string) error {
 		}
 		sort.Strings(prettySlot)
 		fmt.Println(strings.Join(prettySlot, ", "))
-	} else {
-		fmt.Println("Car with that color not present in the parking lot")
+		return nil
 	}
-	return nil
+	return fmt.Errorf("Car with that color not present in the parking lot")
+
 }
 
 func SlotNumberForRegistrationNumber(regNo string) error {
@@ -170,8 +168,8 @@ func SlotNumberForRegistrationNumber(regNo string) error {
 
 	if slot, ok := pl.RegNoSlot[regNo]; ok {
 		fmt.Println(slot)
-	} else {
-		return fmt.Errorf("Not found")
+		return nil
 	}
-	return nil
+	return fmt.Errorf("Not found")
+
 }

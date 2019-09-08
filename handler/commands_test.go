@@ -71,7 +71,7 @@ func TestProcessCommandWithRightCommand5(t *testing.T) {
 	w.Close()
 	os.Stdout = old // restoring the real stdout
 	out := <-outC
-	expected := "Slot No.\tRegistration No.\tColour\n1\t1\tred\n"
+	expected := "Slot No.\tRegistration No.\tColour\n1\t\t1\t\tred\n"
 	if err != nil || expected != out {
 		t.Errorf("Test failed, expected: '%s', got:  '%s'", expected, out)
 	}

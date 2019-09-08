@@ -39,9 +39,9 @@ func processCommand(command string) error {
 		fmt.Println(err.Error())
 		return err
 	} else if lengthOfCommand == 1 {
-		command = commandDelimited[0]
+		command = strings.ToLower(commandDelimited[0])
 	} else {
-		command = commandDelimited[0]
+		command = strings.ToLower(commandDelimited[0])
 		arguments = commandDelimited[1:]
 	}
 

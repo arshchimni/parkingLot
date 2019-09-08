@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 )
 
 // Common Function with dependency of input injected via argument
 func ReadAndProcessFromInput(input io.Reader) {
 	scanner := bufio.NewScanner(input)
 	for scanner.Scan() {
-		command := strings.ToLower(scanner.Text())
+		command := scanner.Text()
 		processCommand(command)
 	}
 
